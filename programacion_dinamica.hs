@@ -59,8 +59,9 @@ aplicarAccionJarras (x,y) a
         y'BA = max 0 (x+y-maxA)
         x'BA = min maxA (x+y)
 
+obj = 4
 fOptJarras :: EstadoJarras -> Int
-fOptJarras (x,y) = maxA-x + maxB-y
+fOptJarras (_,y) = abs (obj - y)
 
 -- res = minimoPD (0,0) genAccionesJarras aplicarAccionJarras fOptJarras
 -- Se queda colgado, porque entra en un bucle de acciones
@@ -73,7 +74,6 @@ type AccionMochila = Int            -- Cantidad de objetos que tomar
 type DatosObjeto = (Int,Int,Int)    -- Valor, peso y unidades disponibles
 
 objetos = [(3,9,2), (4,8,2), (2,6,1)]
-maxPeso = 15
 capacidadInicial = 25
 
 esEstadoFinalMochila :: EstadoMochila -> Bool
