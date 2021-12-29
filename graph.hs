@@ -106,6 +106,18 @@ vertices g = fst g
 edges :: Graph a b -> [Edge b]
 edges g = snd g
 
+(-*) :: (Eq a, Eq b) => Graph a b -> Graph a b -> Graph a b
+g1 -* g2 = (vs, es)
+    where
+        vs = [v | v<-vertices g1, not (elem v (vertices g2))]
+        es = [e | e<-edges g1, not (elem e (edges g2))]
+
+(+*) :: (Eq a, Eq b) => Graph a b -> Graph a b -> Graph a b
+g1 +* g2 = (vs, es)
+    where
+        vs = vertices g2 ++ [v | v<-vertices g1, not (elem v (vertices g2))]
+        es = edges g2 ++ [e | e<-edges g1, not (elem e (edges g2))]
+
 -- For vertices
 vertexEdges :: Graph a b -> Vertex a -> [Edge b]
 vertexEdges g v = undefined
