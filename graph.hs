@@ -137,6 +137,14 @@ vertexFromId g i = aux i vs
             | vertexId v==i = v
             | otherwise = aux i vs
 
+neighbours :: Graph a b -> Vertex a -> [Vertex a]
+neighbours g v = [aux (edgeVertices g e) | e<-es]
+    where
+        es = vertexEdges g v
+        aux [v1,v2]
+            | vertexId v1==vertexId v = v2
+            | otherwise = v1
+
 -- For edges
 edgeSource :: Graph a b -> Edge b -> Vertex a
 edgeSource g (_,i,_) = vertexFromId g i
@@ -144,25 +152,71 @@ edgeSource g (_,i,_) = vertexFromId g i
 edgeTarget :: Graph a b -> Edge b -> Vertex a
 edgeTarget g (_,_,i) = vertexFromId g i
 
+edgeVertices :: Graph a b -> Edge b -> [Vertex a]
+edgeVertices g e = [edgeSource g e, edgeTarget g e]
 
--- Algorithms --
 
-isConnected :: Graph a b -> Bool
-isConnected g = undefined
--- Comprobar si el grafo es conexo
+-- Connetion algorithms --
 
-connectedComponents :: Graph a b -> [Graph a b]
-connectedComponents g = undefined
+-- Obtener la componente conexa de un vértice del grafo
+connectedComponent :: (Eq a, Eq b) => Graph a b -> Vertex a -> Graph a b
+connectedComponent g v = connectedComponentAux g [v] ([v],[])
+
+connectedComponentAux :: (Eq a, Eq b) => Graph a b -> [Vertex a] -> Graph a b -> Graph a b
+connectedComponentAux _ [] acc = acc
+connectedComponentAux g (v:vs) acc = connectedComponentAux g (vs++vs2) (vertices acc ++ vs2, edges acc ++ es)
+    where
+        es = filter (\e -> not (elem e (edges acc))) (vertexEdges g v)
+        vs2 = filter
+            (\v -> not (elem v (vertices acc)) && not (elem v vs))
+            (neighbours g v)
+
 -- Obtener las componentes conexas del grafo
+connectedComponents :: (Eq a, Eq b) => Graph a b -> [Graph a b]
+connectedComponents ([],[]) = []
+connectedComponents g = g1:connectedComponents (g -* g1)
+    where
+        v = head $ vertices g
+        g1 = connectedComponent g v
 
+-- Obtener la componente fuertemente conexa de un vértice del grafo
+stronglyConnectedComponent :: (Eq a, Eq b) => Graph a b -> Vertex a -> Graph a b
+stronglyConnectedComponent g v = stronglyConnectedComponentAux g [v] ([v],[])
+
+stronglyConnectedComponentAux :: (Eq a, Eq b) => Graph a b -> [Vertex a] -> Graph a b -> Graph a b
+stronglyConnectedComponentAux _ [] acc = acc
+stronglyConnectedComponentAux g (v:vs) acc = stronglyConnectedComponentAux g (vs++vs2) (vertices acc ++ vs2, edges acc ++ es)
+    where
+        es = filter (\e -> not (elem e (edges acc))) (outEdges g v)
+        vs2 = filter
+            (\v -> not (elem v (vertices acc)) && not (elem v vs))
+            [edgeTarget g e | e<-es]
+
+stronglyConnectedComponents :: (Eq a, Eq b) => Graph a b -> [Graph a b]
+stronglyConnectedComponents g = map (stronglyConnectedComponent g) (vertices g)
+
+-- Comprobar si el grafo es conexo
+isConnected :: (Eq a, Eq b) => Graph a b -> Bool
+isConnected g = length (vertices g) == length (vertices (connectedComponent g (head $ vertices g)))
+
+-- Comprobar si el grafo es fuertemente conexo
+isStronglyConnected :: (Eq a, Eq b) => Graph a b -> Bool
+isStronglyConnected g = all aux (vertices g)
+    where
+        n = length (vertices g)
+        aux v = n == length (vertices (stronglyConnectedComponent g v))
+
+
+-- Other algorithms --
+
+-- Buscar un recubrimiento mínimo por aristas (algoritmo de Kruskal)
 edgeCover :: Graph a b -> [Edge b]
 edgeCover g = undefined
--- Buscar un recubrimiento mínimo por aristas (algoritmo de Kruskal)
 
+-- Buscar un recubrimiento mínimo por vértices
 vertexCover :: Graph a b -> [Vertex a]
 vertexCover g = undefined
--- Buscar un recubrimiento mínimo por vértices
 
+-- Buscar el camino mínimo (algoritmo de Dijkstra)
 shortestPath :: Graph a b -> Vertex a -> Vertex b -> [Edge b]
 shortestPath g v1 v2 = undefined
--- Buscar el camino mínimo (algoritmo de Dijkstra)
