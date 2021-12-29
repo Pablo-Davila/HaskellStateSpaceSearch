@@ -120,13 +120,13 @@ g1 +* g2 = (vs, es)
 
 -- For vertices
 vertexEdges :: Graph a b -> Vertex a -> [Edge b]
-vertexEdges g v = undefined
+vertexEdges g v = inEdges g v ++ outEdges g v
 
 inEdges :: Graph a b -> Vertex a -> [Edge b]
-inEdges = undefined
+inEdges g v = [e | e<-edges g, vertexId v==vertexId (edgeTarget g e)]
 
 outEdges :: Graph a b -> Vertex a -> [Edge b]
-outEdges = undefined
+outEdges g v = [e | e<-edges g, vertexId v==vertexId (edgeSource g e)]
 
 vertexFromId :: Graph a b -> Int -> Vertex a
 vertexFromId g i = aux i vs
