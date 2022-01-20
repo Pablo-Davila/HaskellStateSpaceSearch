@@ -63,7 +63,7 @@ graph :: [Vertex a] -> [Edge b] -> Graph a b
 graph vs es
     | checkGraphIds g = g
     | otherwise = error "Incompatible graph arguments"
-    where g = graph vs es
+    where g = (vs, es)
 
 addVertex :: Graph a b -> Vertex a -> Graph a b
 addVertex g v = (v:vertices g, edges g)
