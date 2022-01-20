@@ -24,8 +24,6 @@ module Graph (
     checkGraphIds
  ) where
 
-import Data.List (sortBy)
-
 -- Data types --
 
 -- (id, tag)
