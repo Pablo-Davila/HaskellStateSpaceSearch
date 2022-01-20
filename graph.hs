@@ -1,4 +1,6 @@
 
+import Data.List (sortBy)
+
 -- Data types --
 
 -- (id, tag)
@@ -106,6 +108,18 @@ vertices g = fst g
 edges :: Graph a b -> [Edge b]
 edges g = snd g
 
+graph :: [Vertex a] -> [Edge b] -> Graph a b
+graph vs es
+    | checkGraphIds g = g
+    | otherwise = error "Incompatible graph arguments"
+    where g = graph vs es
+
+addVertex :: Graph a b -> Vertex a -> Graph a b
+addVertex g v = (v:vertices g, edges g)
+
+addEdge :: Graph a b -> Edge b -> Graph a b
+addEdge g e = (vertices g, e:edges g)
+
 (-*) :: (Eq a, Eq b) => Graph a b -> Graph a b -> Graph a b
 g1 -* g2 = (vs, es)
     where
@@ -118,7 +132,6 @@ g1 +* g2 = (vs, es)
         vs = vertices g2 ++ [v | v<-vertices g1, not (elem v (vertices g2))]
         es = edges g2 ++ [e | e<-edges g1, not (elem e (edges g2))]
 
--- For vertices
 vertexEdges :: Graph a b -> Vertex a -> [Edge b]
 vertexEdges g v = inEdges g v ++ outEdges g v
 
@@ -145,7 +158,6 @@ neighbours g v = [aux (edgeVertices g e) | e<-es]
             | vertexId v1==vertexId v = v2
             | otherwise = v1
 
--- For edges
 edgeSource :: Graph a b -> Edge b -> Vertex a
 edgeSource g (_,i,_) = vertexFromId g i
 
@@ -154,6 +166,17 @@ edgeTarget g (_,_,i) = vertexFromId g i
 
 edgeVertices :: Graph a b -> Edge b -> [Vertex a]
 edgeVertices g e = [edgeSource g e, edgeTarget g e]
+
+-- Property
+checkGraphIds :: Graph a b -> Bool
+checkGraphIds g = checkVertices ids && checkEdgesSource && checkEdgesTarget
+    where
+        ids = map vertexId (vertices g)
+        checkVertices [] = True
+        checkVertices (id:ids) = not (elem id ids) && checkVertices ids
+        es = edges g
+        checkEdgesSource = all (\id -> elem id ids) [id | (_,id,_)<-es]
+        checkEdgesTarget = all (\id -> elem id ids) [id | (_,_,id)<-es]
 
 
 -- Connetion algorithms --
