@@ -13,8 +13,10 @@ import Graph.Connection
 -- Tree cover algorithms --
 
 -- Obtener un árbol recubridor
-treeCover :: (Eq a) => Graph a b -> Graph a b
-treeCover g = aux (vertices g) ([head (vertices g)],[])
+treeCover :: (Eq a, Eq b) => Graph a b -> Graph a b
+treeCover g
+    | isConnected g = aux (vertices g) ([head (vertices g)],[])
+    | otherwise = error "The graph must be connected"
     where
         aux [] acc = acc 
         aux (v:vs) (vacc,eacc) = aux vs (vacc++vIn++vOut, eacc++eIn++eOut)
@@ -27,7 +29,7 @@ treeCover g = aux (vertices g) ([head (vertices g)],[])
 -- Buscar un árbol recubridor de peso mínimo en un grafo conexo (algoritmo de Kruskal)
 minTreeCover :: (Eq a, Eq b, Ord b) => Graph a b -> Graph a b
 minTreeCover g
-    | isConnected g = (vertices g, treeEdges)
+    | isConnected g = graph (vertices g) treeEdges
     | otherwise = error "The graph must be connected"
     where
         ids = map vertexId (vertices g)
