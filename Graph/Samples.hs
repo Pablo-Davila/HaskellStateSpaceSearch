@@ -1,10 +1,10 @@
 
-import Graph
-
 module Graph.Samples (
     g1, g2, g3, g4,
     v0, v5
 ) where
+
+import Graph
 
 
 -- Graph samples --

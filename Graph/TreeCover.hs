@@ -1,12 +1,13 @@
 
-import Data.List (sortBy)
-import Graph
-
 module Graph.TreeCover (
     treeCover,
     minTreeCover,
     minForestCover
 ) where
+
+import Data.List (sortBy)
+import Graph
+import Graph.Connection
 
 
 -- Tree cover algorithms --

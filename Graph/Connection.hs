@@ -1,6 +1,4 @@
 
-import Graph
-
 module Graph.Connection (
     connectedComponent,
     connectedComponents,
@@ -9,6 +7,8 @@ module Graph.Connection (
     isConnected,
     isStronglyConnected
 ) where
+
+import Graph
 
 
 -- Connection algorithms --
