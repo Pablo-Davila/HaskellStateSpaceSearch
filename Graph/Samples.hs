@@ -1,7 +1,7 @@
 
 module Graph.Samples (
     g1, g2, g3, g4,
-    v0, v5
+    v0, v1, v2, v3, v4, v5
 ) where
 
 import Graph
@@ -38,6 +38,7 @@ g2 = (
         ],
         [ -- Edges
             (0.5, 5, 6),
+            (1.5, 5, 8),
             (2.2, 7, 6),
             (1.3, 7, 8),
             (3.7, 8, 6),
@@ -62,8 +63,8 @@ g4 = (
         ]
     )
 
-v0 = head $ fst g1
-v5 = head $ fst g2
+[v0,v1,v2,v3,v4] = vertices g1
+v5 = head $ vertices g2
 
 
 {-
@@ -75,14 +76,14 @@ Drawing g1:
 
 Drawing g2:
  v5 -> v6
-     _^ ^
-   _/   |
+  |  _^ ^
+  v_/   |
  v8 <- v7 -> v9
 
 Drawing g3:
  v0 -> v1            v5 -> v6
-     _^ |                _^ ^
-   _/   v              _/   |
+     _^ |             |  _^ ^
+   _/   v             v_/   |
  v3 <- v2 -> v4      v8 <- v7 -> v9
 
 Drawing g4:
