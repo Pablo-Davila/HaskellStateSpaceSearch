@@ -1,7 +1,8 @@
 
 module Graph.Samples (
     g1, g2, g3, g4,
-    v0, v1, v2, v3, v4, v5
+    v0, v1, v2, v3, v4, v5,
+    drawG1, drawG2, drawG3, drawG4
 ) where
 
 import Graph
@@ -67,28 +68,38 @@ g4 = (
 v5 = head $ vertices g2
 
 
-{-
-Drawing g1:
- v0 -> v1
-     _^ |
-   _/   v
- v3 <- v2 -> v4
+drawG1 :: IO ()
+drawingG1 = do
+    putStrLn (
+        "Drawing g1:\n"
+        ++ "v0 -> v1\n"
+        ++ "    _^ |\n"
+        ++ "  _/   v\n"
+        ++ "v3 <- v2 -> v4")
 
-Drawing g2:
- v5 -> v6
-  |  _^ ^
-  v_/   |
- v8 <- v7 -> v9
+drawG2 :: IO ()
+drawingG2 = do
+    putStrLn (
+        "Drawing g2:\n"
+        ++ "v5 -> v6\n"
+        ++ " |  _^ ^\n"
+        ++ " v_/   |\n"
+        ++ "v8 <- v7 -> v9")
 
-Drawing g3:
- v0 -> v1            v5 -> v6
-     _^ |             |  _^ ^
-   _/   v             v_/   |
- v3 <- v2 -> v4      v8 <- v7 -> v9
+drawG3 :: IO ()
+drawingG3 = do
+    putStrLn (
+        "Drawing g3:\n"
+        ++ "v0 -> v1            v5 -> v6\n"
+        ++ "    _^ |             |  _^ ^\n"
+        ++ "  _/   v             v_/   |\n"
+        ++ "v3 <- v2 -> v4      v8 <- v7 -> v9")
 
-Drawing g4:
- v0 -> v1
-   ^_   |
-     \_ v
-       v2
--}
+drawG4 :: IO ()
+drawingG4 = do
+    putStrLn (
+        "Drawing g4:\n"
+        ++ "v0 -> v1\n"
+        ++ "  ^_   |\n"
+        ++ "    \\_ v\n"
+        ++ "      v2")
