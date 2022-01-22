@@ -5,6 +5,7 @@ import StateSpaceSearch.Greedy hiding (reconstructSolState)
 
 import StateSpaceSearch.Problem.ProblemaMochila
 import StateSpaceSearch.Problem.ProblemaMatrices
+import StateSpaceSearch.Problem.ProblemaJarras
 
 
 -- Problema de la mochila --
@@ -31,3 +32,15 @@ matricesPD = dynamicpMin estadoInicialMatrices genAccionesMatrices aplicarAccion
 
 -- Este problema no se puede resolver mediante backtracking, programación
 -- dinámica con reducción ni el algoritmo voraz
+
+
+-- Problema de las jarras --
+
+-- Este problema no se puede resolver en general mediante ninguno de los
+-- algoritmos anteriores, debido a que se pueden producir ciclos infinitos de
+-- acciones que pasan por los mismos estados sin llegar a un caso base
+
+-- Al acceder a jarrasPD se calcula su valor (evaluación perezosa) y el
+-- programa queda bloqueado
+
+jarrasPDR = dynamicpRedMin estadoInicialJarras genAccionesJarras aplicarAccionJarras fOptJarras esEstadoFinalJarras
