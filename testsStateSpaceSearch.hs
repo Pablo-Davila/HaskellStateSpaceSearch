@@ -11,18 +11,18 @@ import StateSpaceSearch.Problem.ProblemaJarras
 -- Problema de la mochila --
 
 -- Backtracking
-mochilaBT = backtrackingMin heuristicaMochila genAccionesMochila fOptMochila esEstadoFinalMochila aplicarAccionMochila (0,0,capacidadInicial) (getNull)
+mochilaBT = backtrackingMax heuristicaMochila genAccionesMochila fOptMochila esEstadoFinalMochila aplicarAccionMochila estadoInicialMochila (getNull)
 
 -- Programación dinámica con reducción
-mochilaPDR = dynamicpRedMin (0,0,capacidadInicial) genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila
-mochilaPDRState = reconstructSolState aplicarAccionMochila esEstadoFinalMochila (0,0,capacidadInicial) (fst mochilaPDR)
+mochilaPDR = dynamicpRedMax estadoInicialMochila genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila
+mochilaPDRState = reconstructSolState aplicarAccionMochila esEstadoFinalMochila estadoInicialMochila (fst mochilaPDR)
 
 -- Programación dinámica
-mochilaPD = dynamicpMin (0,0,capacidadInicial) genAccionesMochila (\e a -> [aplicarAccionMochila e a]) fOptMochila esEstadoFinalMochila (\_ _ vs -> head vs)
+mochilaPD = dynamicpMax estadoInicialMochila genAccionesMochila (\e a -> [aplicarAccionMochila e a]) fOptMochila esEstadoFinalMochila (\_ _ vs -> head vs)
 
 -- Voraz
-mochilaGD = greedyMin genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila heuristicaMochila (0,0,capacidadInicial)
-mochilaGDState = reconstructSolState aplicarAccionMochila esEstadoFinalMochila (0,0,capacidadInicial) (fst mochilaGD)
+mochilaGD = greedyMax genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila heuristicaMochila estadoInicialMochila
+mochilaGDState = reconstructSolState aplicarAccionMochila esEstadoFinalMochila estadoInicialMochila (fst mochilaGD)
 
 
 -- Problema Matrices --

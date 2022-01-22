@@ -1,6 +1,7 @@
 
 module StateSpaceSearch.Greedy (
     greedyMin,
+    greedyMax,
     reconstructSolState
 ) where
 
@@ -9,14 +10,18 @@ module StateSpaceSearch.Greedy (
 
 greedyMin :: (Ord v, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> ([a], v)
 greedyMin generarAcciones aplicarAccion fOpt esEstadoFinal heuristica e@estado
-    | esEstadoFinal e = ([], fOpt estado)
-    | otherwise = (mejorAccion:fst resto, snd(resto))
+    | esEstadoFinal e = ([], fOpt e)
+    | otherwise = (mejorAccion:as, v)
     where
-        minV = greedyMin generarAcciones aplicarAccion fOpt esEstadoFinal heuristica
         acciones = generarAcciones estado
         mejorAccion = customMinimumBy (heuristica e) acciones
-        resto = minV $ aplicarAccion estado mejorAccion
+        (as,v) = greedyMin generarAcciones aplicarAccion fOpt esEstadoFinal heuristica (aplicarAccion estado mejorAccion)
 
+greedyMax :: (Num v, Ord v, Num c, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> ([a], v)
+greedyMax generarAcciones aplicarAccion fOpt esEstadoFinal heuristica estado = (as, -v)
+    where (as, v) = greedyMin generarAcciones aplicarAccion (\e -> -fOpt e) esEstadoFinal (\e a -> -heuristica e a) estado
+
+-- Function used to reconstruct the final solution state applying a sequence of actions
 reconstructSolState :: (e -> a -> e) -> (e -> Bool) -> e -> [a] -> e
 reconstructSolState aplicarAccion esEstadoFinal e@estado acciones
     | esEstadoFinal e = e

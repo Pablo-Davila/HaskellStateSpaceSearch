@@ -5,7 +5,8 @@ module StateSpaceSearch.Backtracking (
     isNull,
     solState,
     solValue,
-    backtrackingMin
+    backtrackingMin,
+    backtrackingMax
 ) where
 
 
@@ -48,3 +49,10 @@ backtrackingMin heuristica acciones fOpt esCasoBase avanza e@estado sol
             | otherwise = sol1
         aux [] = Null
         aux (a:as) = elige (minBT (avanza e a) sol) (aux as)
+
+backtrackingMax :: (Ord v, Num v) => (e -> a -> v) -> (e -> [a]) -> (e -> v) -> (e -> Bool) -> (e -> a -> e) -> e -> Solution e v -> Solution e v
+backtrackingMax heuristica acciones fOpt esCasoBase avanza estado sol = (
+    res $ backtrackingMin heuristica acciones (\e -> -fOpt e) esCasoBase avanza estado sol)
+    where
+        res Null = Null
+        res (Sol e v) = Sol e (-v)

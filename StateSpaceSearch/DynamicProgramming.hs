@@ -1,7 +1,9 @@
 
 module StateSpaceSearch.DynamicProgramming (
     dynamicpMin,
+    dynamicpMax,
     dynamicpRedMin,
+    dynamicpRedMax,
     reconstructSolState
 ) where
 
@@ -18,6 +20,10 @@ dynamicpMin e@estado generarAcciones aplicarAccion fOpt esEstadoFinal solucionPa
         next a = solucionParcial e a (resSubproblemas $ aplicarAccion e a)
         ls = [next a | a<-generarAcciones e]
 
+dynamicpMax :: (Num v, Ord v) => e -> (e -> [a]) -> (e -> a -> [e]) -> (e -> v) -> (e -> Bool) -> (e -> a -> [v] -> v) -> v
+dynamicpMax estado generarAcciones aplicarAccion fOpt esEstadoFinal solucionParcial = (
+    -dynamicpMin estado generarAcciones aplicarAccion (\e -> -fOpt e) esEstadoFinal solucionParcial)
+
 -- Dynamic programming algorithm with reduction
 dynamicpRedMin :: (Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> ([a], v)
 dynamicpRedMin e@estado generarAcciones aplicarAccion fOpt esEstadoFinal
@@ -30,6 +36,10 @@ dynamicpRedMin e@estado generarAcciones aplicarAccion fOpt esEstadoFinal
                 addAction a (next a)
                 | a<-generarAcciones e
             ]
+
+dynamicpRedMax :: (Num v, Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> ([a], v)
+dynamicpRedMax estado generarAcciones aplicarAccion fOpt esEstadoFinal = (as, -v)
+    where (as, v) = dynamicpRedMin estado generarAcciones aplicarAccion (\e -> -fOpt e) esEstadoFinal
 
 -- Function used to reconstruct the final solution state in a reduction problem applying a sequence of actions
 reconstructSolState :: (e -> a -> e) -> (e -> Bool) -> e -> [a] -> e
