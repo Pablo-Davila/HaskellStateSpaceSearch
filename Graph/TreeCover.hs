@@ -1,6 +1,7 @@
 
 module Graph.TreeCover (
     treeCover,
+    forestCover,
     minTreeCover,
     minForestCover
 ) where
@@ -25,6 +26,13 @@ treeCover g
                 vIn = [edgeSource g e | e<-eIn]
                 eOut = [e | e<-outEdges g v, not (elem (edgeTarget g e) (vacc++vIn))]
                 vOut = [edgeTarget g e | e<-eOut]
+
+-- Buscar un bosque recubridor
+forestCover :: (Eq a, Eq b, Ord b) => Graph a b -> [Graph a b]
+forestCover g = [treeCover h | h<-connectedComponents g]
+
+
+-- Minimum weight tree cover algorithms --
 
 -- Buscar un árbol recubridor de peso mínimo en un grafo conexo (algoritmo de Kruskal)
 minTreeCover :: (Eq a, Eq b, Ord b) => Graph a b -> Graph a b
