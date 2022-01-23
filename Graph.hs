@@ -24,6 +24,9 @@ module Graph (
     checkGraphIds
  ) where
 
+import Data.List (nub)
+
+
 -- Data types --
 
 -- (id, tag)
@@ -119,11 +122,10 @@ edgeVertices :: Graph a b -> Edge b -> [Vertex a]
 edgeVertices g e = [edgeSource g e, edgeTarget g e]
 
 checkGraphIds :: Graph a b -> Bool
-checkGraphIds g = checkVertices ids && checkEdgesSource && checkEdgesTarget
+checkGraphIds g = checkVertices && checkEdgesSource && checkEdgesTarget
     where
         ids = map vertexId (vertices g)
-        checkVertices [] = True
-        checkVertices (id:ids) = not (elem id ids) && checkVertices ids
+        checkVertices = length ids == length (nub ids)
         es = edges g
         checkEdgesSource = all (\id -> elem id ids) [id | (_,id,_)<-es]
         checkEdgesTarget = all (\id -> elem id ids) [id | (_,_,id)<-es]
