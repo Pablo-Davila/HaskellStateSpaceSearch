@@ -69,7 +69,7 @@ v5 = head $ vertices g2
 
 
 drawG1 :: IO ()
-drawingG1 = do
+drawG1 = do
     putStrLn (
         "Drawing g1:\n"
         ++ "v0 -> v1\n"
@@ -78,7 +78,7 @@ drawingG1 = do
         ++ "v3 <- v2 -> v4")
 
 drawG2 :: IO ()
-drawingG2 = do
+drawG2 = do
     putStrLn (
         "Drawing g2:\n"
         ++ "v5 -> v6\n"
@@ -87,7 +87,7 @@ drawingG2 = do
         ++ "v8 <- v7 -> v9")
 
 drawG3 :: IO ()
-drawingG3 = do
+drawG3 = do
     putStrLn (
         "Drawing g3:\n"
         ++ "v0 -> v1            v5 -> v6\n"
@@ -96,7 +96,7 @@ drawingG3 = do
         ++ "v3 <- v2 -> v4      v8 <- v7 -> v9")
 
 drawG4 :: IO ()
-drawingG4 = do
+drawG4 = do
     putStrLn (
         "Drawing g4:\n"
         ++ "v0 -> v1\n"
