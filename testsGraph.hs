@@ -4,12 +4,13 @@ import Graph.Samples
 import Graph.Connection
 import Graph.TreeCover
 
-
+testsGraph :: [Bool]
 testsGraph = [  -- Graph tests
         g1 +* g2 -* g2 == g1,
         g1 +* g2 -* g1 == g2
     ]
 
+testsSamples :: [Bool]
 testsSamples = [  -- Graph.Samples tests
         checkGraphIds g1,
         checkGraphIds g2,
@@ -17,6 +18,7 @@ testsSamples = [  -- Graph.Samples tests
         checkGraphIds g4
     ]
 
+testsConnection :: [Bool]
 testsConnection = [  -- Graph.Connection tests
         connectedComponent g1 v0 == graph
             [(0,"Vertex 0"),(1,"Vertex 1"),(3,"Vertex 3"),(2,"Vertex 2"),(4,"Vertex 4")]
@@ -56,6 +58,7 @@ testsConnection = [  -- Graph.Connection tests
         isStronglyConnected g4 == True
     ]
 
+testsTreeCover :: [Bool]
 testsTreeCover = [  -- Graph.TreeCover tests
         treeCover g1 == graph
             [(0,"Vertex 0"),(1,"Vertex 1"),(3,"Vertex 3"),(2,"Vertex 2"),(4,"Vertex 4")]
@@ -82,9 +85,10 @@ testsTreeCover = [  -- Graph.TreeCover tests
     ]
 
 
+result :: IO()
 result
-    | and tests = "Everything correct!"
-    | otherwise = show nFailed ++ " failed test" ++ if nFailed==1 then "!" else "s!"
+    | and tests = putStrLn "Everything correct!"
+    | otherwise = putStrLn $ show nFailed ++ " failed test" ++ if nFailed==1 then "!" else "s!"
     where
         tests = concat [testsGraph, testsSamples, testsConnection, testsTreeCover]
         nFailed = length [b | b<-tests, b==False]
