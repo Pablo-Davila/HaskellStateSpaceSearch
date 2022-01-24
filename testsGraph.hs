@@ -1,13 +1,41 @@
 
+import Data.Array
+
 import Graph
 import Graph.Samples
 import Graph.Connection
 import Graph.TreeCover
 
+
 testsGraph :: [Bool]
 testsGraph = [  -- Graph tests
         g1 +* g2 -* g2 == g1,
-        g1 +* g2 -* g1 == g2
+        g1 +* g2 -* g1 == g2,
+
+        findEdge g1 v1 v0 == Just (edge 0.5 0 1),
+        findEdge g1 v0 v4 == Nothing,
+
+        findEdgeDirected g1 v0 v1 == Just (edge 0.5 0 1),
+        findEdgeDirected g1 v0 v4 == Nothing,
+
+        adjacencyMatrixDirected g1 == array
+            ((1,1),(5,5))
+            [
+                ((1,1),Nothing),((1,2),Just 0.5),((1,3),Nothing),((1,4),Nothing),((1,5),Nothing),
+                ((2,1),Nothing),((2,2),Nothing),((2,3),Just 2.2),((2,4),Nothing),((2,5),Nothing),
+                ((3,1),Nothing),((3,2),Nothing),((3,3),Nothing),((3,4),Just 1.3),((3,5),Just 3.2),
+                ((4,1),Nothing),((4,2),Just 3.7),((4,3),Nothing),((4,4),Nothing),((4,5),Nothing),
+                ((5,1),Nothing),((5,2),Nothing),((5,3),Nothing),((5,4),Nothing),((5,5),Nothing)
+            ],
+        adjacencyMatrix g1 == array
+            ((1,1),(5,5))
+            [
+                ((1,1),Just 0.5),((1,2),Just 0.5),((1,3),Nothing),((1,4),Nothing),((1,5),Nothing),
+                ((2,1),Just 0.5),((2,2),Just 0.5),((2,3),Just 2.2),((2,4),Just 3.7),((2,5),Nothing),
+                ((3,1),Nothing),((3,2),Just 2.2),((3,3),Just 2.2),((3,4),Just 1.3),((3,5),Just 3.2),
+                ((4,1),Nothing),((4,2),Just 3.7),((4,3),Just 1.3),((4,4),Just 1.3),((4,5),Nothing),
+                ((5,1),Nothing),((5,2),Nothing),((5,3),Just 3.2),((5,4),Nothing),((5,5),Just 3.2)
+            ]
     ]
 
 testsSamples :: [Bool]

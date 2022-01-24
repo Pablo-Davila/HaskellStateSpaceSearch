@@ -23,10 +23,15 @@ module Graph (
     edgeSource,
     edgeTarget,
     edgeVertices,
+    findEdge,
+    findEdgeDirected,
+    adjacencyMatrix,
+    adjacencyMatrixDirected,
     checkGraphIds
  ) where
 
 import Data.List (nub)
+import Data.Array
 
 
 -- Data types --
@@ -128,6 +133,39 @@ edgeTarget g (_,_,i) = vertexFromId g i
 
 edgeVertices :: Graph a b -> Edge b -> [Vertex a]
 edgeVertices g e = [edgeSource g e, edgeTarget g e]
+
+findEdge :: (Eq a) => Graph a b -> Vertex a -> Vertex a -> Maybe (Edge b)
+findEdge g v1 v2 = aux $ edges g
+    where
+        aux [] = Nothing
+        aux (e:es)
+            | elem v1 vs && elem v2 vs = Just e
+            | otherwise = aux es
+            where vs = edgeVertices g e
+
+findEdgeDirected :: (Eq a) => Graph a b -> Vertex a -> Vertex a -> Maybe (Edge b)
+findEdgeDirected g v1 v2 = aux $ edges g
+    where
+        aux [] = Nothing
+        aux (e:es)
+            | v1==edgeSource g e && v2==edgeTarget g e = Just e
+            | otherwise = aux es
+
+adjacencyMatrix :: (Eq a) => Graph a b -> Array (Int,Int) (Maybe b)
+adjacencyMatrix g = array ((1,1),(n,n)) [((i1,i2), tag (findEdge g v1 v2)) | (i1,v1)<-zip [1..] vs, (i2,v2)<-zip [1..] vs]
+    where
+        vs = vertices g
+        n = length $ vertices g
+        tag (Just e) = Just (edgeTag e)
+        tag _ = Nothing
+
+adjacencyMatrixDirected :: (Eq a) => Graph a b -> Array (Int,Int) (Maybe b)
+adjacencyMatrixDirected g = array ((1,1),(n,n)) [((i1,i2), tag (findEdgeDirected g v1 v2)) | (i1,v1)<-zip [1..] vs, (i2,v2)<-zip [1..] vs]
+    where
+        vs = vertices g
+        n = length $ vertices g
+        tag (Just e) = Just (edgeTag e)
+        tag _ = Nothing
 
 checkGraphIds :: Graph a b -> Bool
 checkGraphIds g = checkVertices && checkEdgesSource && checkEdgesTarget
