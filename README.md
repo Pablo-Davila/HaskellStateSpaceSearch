@@ -67,3 +67,6 @@ Sol (3,11,0) 11
 *Main> jarrasPDR
 # La evaluación de jarrasPDR no termina. La razón está detallada en la memoria
 ```
+
+Al tratarse de programas no interactivos consideramos que no es necesario
+compilarlos, por lo que no cuentan con una función `main`.
