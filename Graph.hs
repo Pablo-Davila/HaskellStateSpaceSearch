@@ -152,20 +152,22 @@ findEdgeDirected g v1 v2 = aux $ edges g
             | otherwise = aux es
 
 adjacencyMatrix :: (Eq a) => Graph a b -> Array (Int,Int) (Maybe b)
-adjacencyMatrix g = array ((1,1),(n,n)) [((i1,i2), tag (findEdge g v1 v2)) | (i1,v1)<-zip [1..] vs, (i2,v2)<-zip [1..] vs]
+adjacencyMatrix g = array ((1,1),(n,n)) [((i1,i2), tag v1 v2) | (i1,v1)<-zip [1..] vs, (i2,v2)<-zip [1..] vs]
     where
         vs = vertices g
         n = length $ vertices g
-        tag (Just e) = Just (edgeTag e)
-        tag _ = Nothing
+        tag v1 v2 = case findEdge g v1 v2 of
+            Just e -> Just (edgeTag e)
+            _ -> Nothing
 
 adjacencyMatrixDirected :: (Eq a) => Graph a b -> Array (Int,Int) (Maybe b)
-adjacencyMatrixDirected g = array ((1,1),(n,n)) [((i1,i2), tag (findEdgeDirected g v1 v2)) | (i1,v1)<-zip [1..] vs, (i2,v2)<-zip [1..] vs]
+adjacencyMatrixDirected g = array ((1,1),(n,n)) [((i1,i2), tag v1 v2) | (i1,v1)<-zip [1..] vs, (i2,v2)<-zip [1..] vs]
     where
         vs = vertices g
         n = length $ vertices g
-        tag (Just e) = Just (edgeTag e)
-        tag _ = Nothing
+        tag v1 v2 = case findEdgeDirected g v1 v2 of
+            Just e = Just (edgeTag e)
+            _ = Nothing
 
 checkGraphIds :: Graph a b -> Bool
 checkGraphIds g = checkVertices && checkEdgesSource && checkEdgesTarget

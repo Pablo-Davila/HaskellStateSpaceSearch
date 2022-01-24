@@ -47,8 +47,9 @@ backtrackingMin heuristica acciones fOpt esCasoBase avanza e@estado sol
             | isNull sol2 = sol1
             | solValue sol2 < solValue sol1 = sol2
             | otherwise = sol1
-        aux [] = Null
-        aux (a:as) = elige (minBT (avanza e a) sol) (aux as)
+        aux as = case as of
+            [] -> Null
+            (a:as) -> elige (minBT (avanza e a) sol) (aux as)
 
 backtrackingMax :: (Ord v, Num v) => (e -> a -> v) -> (e -> [a]) -> (e -> v) -> (e -> Bool) -> (e -> a -> e) -> e -> Solution e v -> Solution e v
 backtrackingMax heuristica acciones fOpt esCasoBase avanza estado sol = (
