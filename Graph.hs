@@ -3,8 +3,10 @@ module Graph (
     Vertex,
     Edge,
     Graph,
+    vertex,
     vertexId,
     vertexTag,
+    edge,
     edgeTag,
     vertices,
     edges,
@@ -41,6 +43,9 @@ type Graph a b = ([Vertex a], [Edge b])
 
 -- Vertex helper functions --
 
+vertex :: Int -> a -> Vertex a
+vertex i t = (i,t)
+
 vertexId :: Vertex a -> Int
 vertexId v = fst v
 
@@ -49,6 +54,9 @@ vertexTag v = snd v
 
 
 -- Edge helper functions --
+
+edge :: b -> Int -> Int -> Edge b
+edge t i1 i2 = (t,i1,i2)
 
 edgeTag :: Edge b -> b
 edgeTag (t,_,_) = t
