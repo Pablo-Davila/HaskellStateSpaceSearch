@@ -1,7 +1,7 @@
--- PilaConTipoDeDatoAlgebraico.hs
--- ImplementaciÃ³n de las pilas mediante tipos de datos algebraicos.
--- JosÃ© A. Alonso JimÃ©nez <jalonso@us.es>, Sevilla, 11 de Septiembre de 2010
--- Modificado nombre de módulo por David Solís <dsolis@us.es>, Sevilla, 25 de Noviembre de 2021
+-- Pila.hs
+-- Implementación de las pilas mediante tipos de datos algebraicos.
+-- José A. Alonso Jiménez <jalonso@us.es>, Sevilla, 11 de Septiembre de 2010
+-- Nombre del módulo modificado por Pablo Dávila Herrero <pablodavila314@gmail.com>, Sevilla, 24 de Noviembre de 2022
 -- ---------------------------------------------------------------------
 
 module Pila
