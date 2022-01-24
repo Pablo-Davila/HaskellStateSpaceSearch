@@ -15,14 +15,14 @@ mochilaBT = backtrackingMax heuristicaMochila genAccionesMochila fOptMochila esE
 
 -- Programación dinámica con reducción
 mochilaPDR = dynamicpRedMax estadoInicialMochila genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila
-mochilaPDRState = reconstructSolState aplicarAccionMochila esEstadoFinalMochila estadoInicialMochila (fst mochilaPDR)
+mochilaPDRState = reconstructSolState aplicarAccionMochila estadoInicialMochila (fst mochilaPDR)
 
 -- Programación dinámica
 mochilaPD = dynamicpMax estadoInicialMochila genAccionesMochila (\e a -> [aplicarAccionMochila e a]) fOptMochila esEstadoFinalMochila (\_ _ vs -> head vs)
 
 -- Voraz
 mochilaGD = greedyMax genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila heuristicaMochila estadoInicialMochila
-mochilaGDState = reconstructSolState aplicarAccionMochila esEstadoFinalMochila estadoInicialMochila (fst mochilaGD)
+mochilaGDState = reconstructSolState aplicarAccionMochila estadoInicialMochila (fst mochilaGD)
 
 
 -- Problema Matrices --

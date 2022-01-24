@@ -5,27 +5,29 @@ module StateSpaceSearch.Greedy (
     reconstructSolState
 ) where
 
+import Pila
+
 
 -- Greedy search dynamic algorithm --
 
-greedyMin :: (Ord v, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> ([a], v)
+greedyMin :: (Ord v, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> (Pila a, v)
 greedyMin generarAcciones aplicarAccion fOpt esEstadoFinal heuristica e@estado
-    | esEstadoFinal e = ([], fOpt e)
-    | otherwise = (mejorAccion:as, v)
+    | esEstadoFinal e = (vacia, fOpt e)
+    | otherwise = (apila mejorAccion as, v)
     where
         acciones = generarAcciones estado
         mejorAccion = customMinimumBy (heuristica e) acciones
         (as,v) = greedyMin generarAcciones aplicarAccion fOpt esEstadoFinal heuristica (aplicarAccion estado mejorAccion)
 
-greedyMax :: (Num v, Ord v, Num c, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> ([a], v)
+greedyMax :: (Num v, Ord v, Num c, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> (Pila a, v)
 greedyMax generarAcciones aplicarAccion fOpt esEstadoFinal heuristica estado = (as, -v)
     where (as, v) = greedyMin generarAcciones aplicarAccion (\e -> -fOpt e) esEstadoFinal (\e a -> -heuristica e a) estado
 
 -- Function used to reconstruct the final solution state applying a sequence of actions
-reconstructSolState :: (e -> a -> e) -> (e -> Bool) -> e -> [a] -> e
-reconstructSolState aplicarAccion esEstadoFinal e@estado acciones
-    | esEstadoFinal e = e
-    | otherwise = reconstructSolState aplicarAccion esEstadoFinal (aplicarAccion e (head acciones)) (tail acciones)
+reconstructSolState :: (e -> a -> e) -> e -> Pila a -> e
+reconstructSolState aplicarAccion e@estado as@acciones
+    | esVacia as = e
+    | otherwise = reconstructSolState aplicarAccion (aplicarAccion e (cima as)) (desapila as)
 
 
 -- Utils --

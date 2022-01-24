@@ -7,6 +7,8 @@ module StateSpaceSearch.DynamicProgramming (
     reconstructSolState
 ) where
 
+import Pila
+
 
 -- Dynamic programming generic algorithms --
 
@@ -25,27 +27,27 @@ dynamicpMax estado generarAcciones aplicarAccion fOpt esEstadoFinal solucionParc
     -dynamicpMin estado generarAcciones aplicarAccion (\e -> -fOpt e) esEstadoFinal solucionParcial)
 
 -- Dynamic programming algorithm with reduction
-dynamicpRedMin :: (Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> ([a], v)
+dynamicpRedMin :: (Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (Pila a, v)
 dynamicpRedMin e@estado generarAcciones aplicarAccion fOpt esEstadoFinal
-    | esEstadoFinal e = ([], fOpt e)
+    | esEstadoFinal e = (vacia, fOpt e)
     | otherwise = customMinimumBy snd ls
     where
         next a = dynamicpRedMin (aplicarAccion e a) generarAcciones aplicarAccion fOpt esEstadoFinal
-        addAction a (as,v) = (a:as, v)
+        addAction a (as,v) = (apila a as, v)
         ls = [
                 addAction a (next a)
                 | a<-generarAcciones e
             ]
 
-dynamicpRedMax :: (Num v, Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> ([a], v)
+dynamicpRedMax :: (Num v, Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (Pila a, v)
 dynamicpRedMax estado generarAcciones aplicarAccion fOpt esEstadoFinal = (as, -v)
     where (as, v) = dynamicpRedMin estado generarAcciones aplicarAccion (\e -> -fOpt e) esEstadoFinal
 
 -- Function used to reconstruct the final solution state in a reduction problem applying a sequence of actions
-reconstructSolState :: (e -> a -> e) -> (e -> Bool) -> e -> [a] -> e
-reconstructSolState aplicarAccion esEstadoFinal e@estado acciones
-    | esEstadoFinal e = e
-    | otherwise = reconstructSolState aplicarAccion esEstadoFinal (aplicarAccion e (head acciones)) (tail acciones)
+reconstructSolState :: (e -> a -> e) -> e -> Pila a -> e
+reconstructSolState aplicarAccion e@estado as@acciones
+    | esVacia as = e
+    | otherwise = reconstructSolState aplicarAccion (aplicarAccion e (cima as)) (desapila as)
 
 
 -- Utils --
