@@ -3,44 +3,44 @@ import StateSpaceSearch.Backtracking
 import StateSpaceSearch.DynamicProgramming
 import StateSpaceSearch.Greedy hiding (reconstructSolState)
 
-import StateSpaceSearch.Problem.ProblemaMochila
-import StateSpaceSearch.Problem.ProblemaMatrices
-import StateSpaceSearch.Problem.ProblemaJarras
+import StateSpaceSearch.Problem.Backpack
+import StateSpaceSearch.Problem.MatricesMultiplication
+import StateSpaceSearch.Problem.WaterJubs
 
 
--- Problema de la mochila --
+-- Backpack problem --
 
 -- Backtracking
-mochilaBT = backtrackingMax heuristicaMochila genAccionesMochila fOptMochila esEstadoFinalMochila aplicarAccionMochila estadoInicialMochila (getNull)
+backpackBT = backtrackingMax backpackHeuristic backpackGenActions backpackOptFunc backpackIsFinalState backpackApplyAction backpackInitialState (getNull)
 
--- Programación dinámica con reducción
-mochilaPDR = dynamicpRedMax estadoInicialMochila genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila
-mochilaPDRState = reconstructSolState aplicarAccionMochila estadoInicialMochila (fst mochilaPDR)
+-- Dynamic programming with reduction
+backpackPDR = dynamicpRedMax backpackInitialState backpackGenActions backpackApplyAction backpackOptFunc backpackIsFinalState
+backpackPDRState = reconstructSolState backpackApplyAction backpackInitialState (fst backpackPDR)
 
--- Programación dinámica
-mochilaPD = dynamicpMax estadoInicialMochila genAccionesMochila (\e a -> [aplicarAccionMochila e a]) fOptMochila esEstadoFinalMochila (\_ _ vs -> head vs)
+-- Dynamic programming
+backpackPD = dynamicpMax backpackInitialState backpackGenActions (\e a -> [backpackApplyAction e a]) backpackOptFunc backpackIsFinalState (\_ _ vs -> head vs)
 
 -- Voraz
-mochilaGD = greedyMax genAccionesMochila aplicarAccionMochila fOptMochila esEstadoFinalMochila heuristicaMochila estadoInicialMochila
-mochilaGDState = reconstructSolState aplicarAccionMochila estadoInicialMochila (fst mochilaGD)
+backpackGD = greedyMax backpackGenActions backpackApplyAction backpackOptFunc backpackIsFinalState backpackHeuristic backpackInitialState
+backpackGDState = reconstructSolState backpackApplyAction backpackInitialState (fst backpackGD)
 
 
--- Problema Matrices --
+-- Matrices multiplication problem --
 
--- Programación dinámica
-matricesPD = dynamicpMin estadoInicialMatrices genAccionesMatrices aplicarAccionMatrices fOptMatrices esEstadoFinalMatrices solucionParcialMatrices
+-- Dynamic programming
+matricesPD = dynamicpMin matricesInitialState matricesGenActions matricesApplyAction matricesOptFunc matricesIsFinalState matricesPartialSolution
 
--- Este problema no se puede resolver mediante backtracking, programación
--- dinámica con reducción ni el algoritmo voraz
+-- This problem cannot be solved using backtracking, dynamic programming with
+-- reduction nor the greedy algorithm. This is because every action taken leads
+-- to more than one subproblems.
 
 
--- Problema de las jarras --
+-- Water jubs problem --
 
--- Este problema no se puede resolver en general mediante ninguno de los
--- algoritmos anteriores, debido a que se pueden producir ciclos infinitos de
--- acciones que pasan por los mismos estados sin llegar a un caso base
+-- In general, this problem cannot be solved using any of the implemented
+-- algorithms because infinite actions loops may appear without reaching a
+-- solution.
 
--- Al acceder a jarrasPD se calcula su valor (evaluación perezosa) y el
--- programa queda bloqueado
+-- Haskell uses lazy evaluation, so jubsPDR will be calculated when called and the program will freeze
 
-jarrasPDR = dynamicpRedMin estadoInicialJarras genAccionesJarras aplicarAccionJarras fOptJarras esEstadoFinalJarras
+jubsPDR = dynamicpRedMin jubsInitialState jubsGenActions jubsApplyAction jubsOptFunc jubsIsFinalState

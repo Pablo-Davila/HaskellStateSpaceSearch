@@ -34,26 +34,26 @@ solValue _ = error "Null solution does not provide a value"
 -- Backtracking generic algorithm --
 
 backtrackingMin :: Ord v => (e -> a -> v) -> (e -> [a]) -> (e -> v) -> (e -> Bool) -> (e -> a -> e) -> e -> Solution e v -> Solution e v
-backtrackingMin heuristica acciones fOpt esCasoBase avanza e@estado sol
-    | esCasoBase e = elige sol (Sol e (fOpt e))
-    | otherwise = aux accionesFiltradas
+backtrackingMin heuristic actions optFunc isFinalState applyAction e@state sol
+    | isFinalState e = choose sol (Sol e (optFunc e))
+    | otherwise = aux filteredActions
     where
-        minBT = backtrackingMin heuristica acciones fOpt esCasoBase avanza
-        accionesFiltradas
-            | isNull sol = acciones e
-            | otherwise = [a | a <- acciones e, heuristica e a < solValue sol]
-        elige sol1 sol2
+        minBT = backtrackingMin heuristic actions optFunc isFinalState applyAction
+        filteredActions
+            | isNull sol = actions e
+            | otherwise = [a | a <- actions e, heuristic e a < solValue sol]
+        choose sol1 sol2
             | isNull sol1 = sol2
             | isNull sol2 = sol1
             | solValue sol2 < solValue sol1 = sol2
             | otherwise = sol1
         aux as = case as of
             [] -> Null
-            (a:as) -> elige (minBT (avanza e a) sol) (aux as)
+            (a:as) -> choose (minBT (applyAction e a) sol) (aux as)
 
 backtrackingMax :: (Ord v, Num v) => (e -> a -> v) -> (e -> [a]) -> (e -> v) -> (e -> Bool) -> (e -> a -> e) -> e -> Solution e v -> Solution e v
-backtrackingMax heuristica acciones fOpt esCasoBase avanza estado sol = (
-    res $ backtrackingMin heuristica acciones (\e -> -fOpt e) esCasoBase avanza estado sol)
+backtrackingMax heuristic actions optFunc isFinalState applyAction state sol = (
+    res $ backtrackingMin heuristic actions (\e -> -optFunc e) isFinalState applyAction state sol)
     where
         res Null = Null
         res (Sol e v) = Sol e (-v)

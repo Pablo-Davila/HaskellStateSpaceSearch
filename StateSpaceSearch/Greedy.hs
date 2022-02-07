@@ -11,23 +11,23 @@ import Pila
 -- Greedy search dynamic algorithm --
 
 greedyMin :: (Ord v, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> (Pila a, v)
-greedyMin generarAcciones aplicarAccion fOpt esEstadoFinal heuristica e@estado
-    | esEstadoFinal e = (vacia, fOpt e)
-    | otherwise = (apila mejorAccion as, v)
+greedyMin genActions applyAction optFunc isFinalState heuristic e@state
+    | isFinalState e = (vacia, optFunc e)
+    | otherwise = (apila bestAction as, v)
     where
-        acciones = generarAcciones estado
-        mejorAccion = customMinimumBy (heuristica e) acciones
-        (as,v) = greedyMin generarAcciones aplicarAccion fOpt esEstadoFinal heuristica (aplicarAccion estado mejorAccion)
+        actions = genActions state
+        bestAction = customMinimumBy (heuristic e) actions
+        (as,v) = greedyMin genActions applyAction optFunc isFinalState heuristic (applyAction state bestAction)
 
 greedyMax :: (Num v, Ord v, Num c, Ord c) => (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (e -> a -> c) -> e -> (Pila a, v)
-greedyMax generarAcciones aplicarAccion fOpt esEstadoFinal heuristica estado = (as, -v)
-    where (as, v) = greedyMin generarAcciones aplicarAccion (\e -> -fOpt e) esEstadoFinal (\e a -> -heuristica e a) estado
+greedyMax genActions applyAction optFunc isFinalState heuristic state = (as, -v)
+    where (as, v) = greedyMin genActions applyAction (\e -> -optFunc e) isFinalState (\e a -> -heuristic e a) state
 
 -- Function used to reconstruct the final solution state applying a sequence of actions
 reconstructSolState :: (e -> a -> e) -> e -> Pila a -> e
-reconstructSolState aplicarAccion e@estado as@acciones
+reconstructSolState applyAction e@state as@actions
     | esVacia as = e
-    | otherwise = reconstructSolState aplicarAccion (aplicarAccion e (cima as)) (desapila as)
+    | otherwise = reconstructSolState applyAction (applyAction e (cima as)) (desapila as)
 
 
 -- Utils --
