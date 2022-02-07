@@ -7,8 +7,6 @@ module StateSpaceSearch.DynamicProgramming (
     reconstructSolState
 ) where
 
-import Pila
-
 
 -- Dynamic programming generic algorithms --
 
@@ -27,27 +25,27 @@ dynamicpMax state genActions applyAction optFunc isFinalState partialSolution = 
     -dynamicpMin state genActions applyAction (\e -> -optFunc e) isFinalState partialSolution)
 
 -- Dynamic programming algorithm with reduction
-dynamicpRedMin :: (Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (Pila a, v)
+dynamicpRedMin :: (Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> ([a], v)
 dynamicpRedMin e@state genActions applyAction optFunc isFinalState
-    | isFinalState e = (vacia, optFunc e)
+    | isFinalState e = ([], optFunc e)
     | otherwise = customMinimumBy snd ls
     where
         next a = dynamicpRedMin (applyAction e a) genActions applyAction optFunc isFinalState
-        addAction a (as,v) = (apila a as, v)
+        addAction a (as,v) = (a:as, v)
         ls = [
                 addAction a (next a)
                 | a<-genActions e
             ]
 
-dynamicpRedMax :: (Num v, Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> (Pila a, v)
+dynamicpRedMax :: (Num v, Ord v) => e -> (e -> [a]) -> (e -> a -> e) -> (e -> v) -> (e -> Bool) -> ([a], v)
 dynamicpRedMax state genActions applyAction optFunc isFinalState = (as, -v)
     where (as, v) = dynamicpRedMin state genActions applyAction (\e -> -optFunc e) isFinalState
 
 -- Function used to reconstruct the final solution state in a reduction problem applying a sequence of actions
-reconstructSolState :: (e -> a -> e) -> e -> Pila a -> e
+reconstructSolState :: (e -> a -> e) -> e -> [a] -> e
 reconstructSolState applyAction e@state as@acciones
-    | esVacia as = e
-    | otherwise = reconstructSolState applyAction (applyAction e (cima as)) (desapila as)
+    | null as = e
+    | otherwise = reconstructSolState applyAction (applyAction e (head as)) (tail as)
 
 
 -- Utils --
