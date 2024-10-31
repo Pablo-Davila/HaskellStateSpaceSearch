@@ -1,7 +1,7 @@
 
 # HaskellStateSpaceSearch
 
-HaskellStateSpaceSearch is a library containing state space search algorithms for Haskell. It was initially developed as part of an assignment for the subject "Delarative Programming" at the University of Seville.
+HaskellStateSpaceSearch is a library containing state space search algorithms for Haskell. It was initially developed as part of an assignment for the subject "Declarative Programming" at the University of Seville.
 
 The remaining part is [HaskellGraph](https://github.com/Pablo-Davila/HaskellGraph), a library used to work with graph data structures.
 
